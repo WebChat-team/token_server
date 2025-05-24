@@ -33,10 +33,7 @@
             }
 
         } catch (Exception $error) {
-            print_r(
-                "Неудачный парсинг .env файла \n".
-                "Ошибка: ".$error->getMessage()."\n"
-            );
+            
         }
 
     }

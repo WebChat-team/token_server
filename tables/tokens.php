@@ -23,4 +23,10 @@
         }
     }
 
+    function deleteTokenByUserId(int $user_id) {
+        global $connection;
+        $deleteToken = $connection->prepare("DELETE FROM tokens WHERE user_id = ?");
+        $deleteToken->execute([$user_id]);
+    }
+
 ?>

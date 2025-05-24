@@ -3,8 +3,8 @@
     $origin = isset($_SERVER["HTTP_ORIGIN"]) ? $_SERVER["HTTP_ORIGIN"] : "";
 
     $allow_domains = [
-        "http://id.webchat.com",
-        "http://api.webchat.com"
+        "http://id.vision.com",
+        "http://api.vision.com"
     ];
 
     if (in_array($origin, $allow_domains)) {

@@ -1,13 +1,14 @@
 <?php
 
+    // requires ============================================ // 
     require_once __DIR__."/./parseDotenv.php";
 
     // helpers ============================================== //
     function base64url_encode($data) {
-        return str_replace(["+", "_", "="], ["-", "/", ""], base64_encode($data));
+        return rtrim(strtr(base64_encode($data), '+/', '-_'), '=');
     }
     function base64url_decode($data) {
-        return base64_decode(str_replace(["+", "_", "="], ["-", "/", ""], $data));
+        return base64_decode(strtr($data, '-_', '+/'));
     }
 
     // constants ============================================ //
@@ -24,12 +25,11 @@
 
             $header = json_encode([
                 "type" => "JWT",
-                "alg" => "HS256",
-                "exp" => time() + (int) $options["expiresIn"]
+                "alg" => "HS256"
             ]);
             $base64UrlHeader = base64url_encode($header);
     
-            $payload = json_encode($data);
+            $payload = json_encode($data + [ "exp" => time() + (int) $options["expiresIn"] ]);
             $base64UrlPayload = base64url_encode($payload);
     
             global $envs;
@@ -39,40 +39,32 @@
             return $base64UrlHeader.".".$base64UrlPayload.".".$base64UrlSignature;
 
         } catch (Exception $error) {
-            print_r(
-                "Неудачное создание JWT токена \n".
-                "Ошибка: ".$error->getMessage()
-            );
             return null;
         }
 
     }
 
     function verifyJWT(string $jwt) {
-
+        
         try {
 
-            $parts_jwt = explode(".", $jwt);
-            if (count($parts_jwt) !== 3) {
-                throw new Exception("Отсутсвуют определённые части токена");
+            $parts = explode(".", $jwt);
+            if (count($parts) !== 3) { 
+                throw new Exception("Invalid JWT structure");
             }
 
-            [$base64UrlHeader, $base64UrlPayload, $base64UrlSignature] = $parts_jwt;
+            [$headerBase64, $payloadBase64, $signatureBase64] = $parts;
 
-            $header = json_decode(base64url_decode($base64UrlHeader));
-            $isExpired = $header->exp < time();
-
+            $header = json_decode(base64url_decode($headerBase64));
+            $payload = json_decode(base64url_decode($payloadBase64));
+            if (!isset($payload->exp) || $payload->exp < time()) {
+                throw new Exception("Token expired");
+            }
+                        
             global $envs;
-            $calculatedSignature = hash_hmac("sha256", $base64UrlHeader.".".$base64UrlPayload, $envs["JWT_SECRET"], true);
-            $calculatedBase64UrlSignature = base64url_encode($calculatedSignature);
+            $calculatedSignature = base64url_encode(hash_hmac("sha256", $headerBase64.".".$payloadBase64, $envs["JWT_SECRET"], true));
 
-            return (
-                base64url_decode($base64UrlHeader) and
-                base64url_decode($base64UrlPayload) and
-                base64url_decode($base64UrlSignature) and
-                !$isExpired and
-                hash_equals($calculatedBase64UrlSignature, $base64UrlSignature)
-            );
+            return hash_equals($calculatedSignature, $signatureBase64);
 
         } catch (Exception $error) {
             return false;
@@ -92,16 +84,12 @@
             }
 
             global $envs;
-            $base64UrlPayload = explode(".", $jwt)[1];
+            [$_, $base64UrlPayload, $_] = explode(".", $jwt);
             $payload = json_decode(base64url_decode($base64UrlPayload));
 
             return $payload;
 
         } catch (Exception $error) {
-            print_r(
-                "Неудачный парсинг JWT токена \n".
-                "Ошибка: ".$error->getMessage()
-            );
             return "null";
         }
 

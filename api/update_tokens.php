@@ -15,8 +15,8 @@
 
         if (isset($data->refresh_token)) {
 
-            if (verifyJWT(urldecode(string: $data->refresh_token))) {
-                $user_data = parseJWT(urldecode($data->refresh_token));
+            if (verifyJWT($data->refresh_token)) {
+                $user_data = parseJWT($data->refresh_token);
                 generate_and_set_tokens_to_cookies($user_data->user_id);
                 http_response_code(200);
             } else {

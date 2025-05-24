@@ -9,13 +9,12 @@
     // main ================================================= //
     try {
 
-        $auth_header = $_SERVER['HTTP_AUTHORIZATION'] ?? '';
-        
-        if (preg_match("/^Bearer (.+)$/", $auth_header, $matches_auth_header)) {
+        $json = file_get_contents('php://input');
+        $data = json_decode($json);
 
-            $access_token = $matches_auth_header[1];
+        if (isset($data->access_token)) {
 
-            if (verifyJWT(urldecode($access_token))) {
+            if (verifyJWT($data->access_token)) {
                 http_response_code(200);
             } else {
                 http_response_code(403);

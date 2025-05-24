@@ -9,12 +9,13 @@ function getConnectionToDataBase() {
         $envs = parseDotenv(__DIR__."/../.env.local", false);
 
         $host = $envs["DATABASE_HOST"];
+        $port = $envs["DATABASE_PORT"];
         $name = $envs["DATABASE_NAME"];
         $username = $envs["DATABASE_USERNAME"];
         $password = $envs["DATABASE_PASSWORD"];
 
         return new PDO(
-            "mysql:host=".$host.";dbname=".$name,
+            "mysql:host=".$host.":".$port.";dbname=".$name,
             $username,
             $password
         );

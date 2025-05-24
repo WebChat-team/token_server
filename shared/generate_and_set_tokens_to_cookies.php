@@ -9,14 +9,14 @@
 
         $expiresInAccessToken = 60 * 60; // 1 hour
         $access_token = generateJWT(["user_id" => $user_id], ["expiresIn" => $expiresInAccessToken]);
-        
+
         setcookie(
             "access_token",
             $access_token,
             [
                 "expires" => time() + $expiresInAccessToken,
                 "httponly" => true,
-                "domain" => ".webchat.com",
+                "domain" => ".vision.com",
                 "samesite" => "Lax"
             ]
         );
@@ -34,7 +34,7 @@
             [
                 "expires" => time() + $expiresInRefreshToken,
                 "httponly" => true,
-                "domain" => ".webchat.com",
+                "domain" => ".vision.com",
                 "samesite" => "Lax"
             ]
         );
