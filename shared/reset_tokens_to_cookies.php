@@ -13,7 +13,7 @@
                 "expires" => "Thu, 01 Jan 1970 00:00:00 GMT",
                 "path" => "/",
                 "httponly" => true,
-                "domain" => ".vision.com",
+                // "domain" => ".vision.com",
                 "samesite" => "Lax"
             ]
         );
@@ -24,7 +24,7 @@
                 "expires" => "Thu, 01 Jan 1970 00:00:00 GMT",
                 "path" => "/",
                 "httponly" => true,
-                "domain" => ".vision.com",
+                // "domain" => ".vision.com",
                 "samesite" => "Lax"
             ]
         );

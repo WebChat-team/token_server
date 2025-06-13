@@ -16,7 +16,7 @@
             [
                 "expires" => time() + $expiresInAccessToken,
                 "httponly" => true,
-                "domain" => ".vision.com",
+                // "domain" => ".vision.com",
                 "samesite" => "Lax"
             ]
         );
@@ -34,7 +34,7 @@
             [
                 "expires" => time() + $expiresInRefreshToken,
                 "httponly" => true,
-                "domain" => ".vision.com",
+                // "domain" => ".vision.com",
                 "samesite" => "Lax"
             ]
         );
