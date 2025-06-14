@@ -3,6 +3,7 @@
     // includes ============================================= //
     include_once __DIR__ . "/../utils/jwt.php";
     include_once __DIR__ . "/../tables/tokens.php";
+    include_once __DIR__ . "/../shared/write_log.php";
 
     // main ================================================= //
     function generate_and_set_tokens_to_cookies(int $user_id){
@@ -16,7 +17,7 @@
             [
                 "expires" => time() + $expiresInAccessToken,
                 "httponly" => true,
-                // "domain" => ".vision.com",
+                "domain" => "158.160.168.65",
                 "samesite" => "Lax"
             ]
         );
@@ -34,7 +35,7 @@
             [
                 "expires" => time() + $expiresInRefreshToken,
                 "httponly" => true,
-                // "domain" => ".vision.com",
+                "domain" => "158.160.168.65",
                 "samesite" => "Lax"
             ]
         );
